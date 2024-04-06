@@ -15,6 +15,7 @@ import net.minestom.server.instance.InstanceContainer
 import net.minestom.server.instance.block.Block
 import net.minestom.server.world.DimensionType
 import java.io.File
+import java.lang.IllegalArgumentException
 import java.util.concurrent.CompletableFuture
 import kotlin.io.path.Path
 
@@ -25,7 +26,6 @@ data class Plot(val id: Int) {
     var devInstance: InstanceContainer
     var devActionContainers: List<ActionContainer> = listOf()
     val plotScope = CoroutineScope(Dispatchers.Default)
-
     init {
         val instanceManager = MinecraftServer.getInstanceManager()
         buildInstance = instanceManager.createInstanceContainer(DimensionType.OVERWORLD)
@@ -82,8 +82,8 @@ data class Plot(val id: Int) {
 
     suspend fun savePlot() {
         var iter = 0
-        for (sx in 1 downTo -3) {
-            for (sz in -1..10) {
+        for(sx in 1 downTo -3) {
+            for(sz in -1..10) {
                 withContext(Dispatchers.IO) {
                     devInstance.loadChunk(sx, sz).get()
                 }
@@ -93,14 +93,13 @@ data class Plot(val id: Int) {
 
         devActionContainers = parseDevArea(devInstance)
 
-        while (true) {
+        while(true) {
             iter++
             try {
                 devActionContainers = parseDevArea(devInstance)
-            } catch (_: Exception) {
-            }
+            } catch(_: Exception) {}
 
-            if (iter % 4 == 0) {
+            if(iter%4 == 0) {
                 buildInstance.saveChunksToStorage()
                 buildInstance.saveInstance()
                 devInstance.saveChunksToStorage()
@@ -112,7 +111,6 @@ data class Plot(val id: Int) {
             delay(2000L)
         }
     }
-
     fun joinInstance(player: Player) {
         player.sendMessage("Taking you to plot ID #$id...")
         try {
@@ -133,7 +131,7 @@ data class Plot(val id: Int) {
                     player.interpret(PlayerEvent.JOIN)
                 }
             }
-        } catch (e: IllegalArgumentException) {
+        } catch(e: IllegalArgumentException) {
             player.setInstance(buildInstance).thenRun {
                 playerModes[player.username] = PlotState(id, PlotMode.PLAY)
                 player.sendMessage("You have joined plot ID #$id")
@@ -156,11 +154,7 @@ data class Plot(val id: Int) {
     fun joinDev(player: Player) {
         player.sendMessage("Taking you to the devspace of plot ID #$id...")
         val mode = playerModes[player.username]!!
-        val future: CompletableFuture<Void> = try {
-            player.setInstance(filterPlot(mode.id).devInstance)
-        } catch (e: Exception) {
-            return
-        }
+        val future: CompletableFuture<Void> = try { player.setInstance(filterPlot(mode.id).devInstance) } catch(e: Exception) { return }
         playerModes[player.username] = PlotState(id, PlotMode.DEV)
         future.thenRun {
             player.sendMessage("You have joined plot ID #$id")

@@ -8,8 +8,8 @@ import net.minestom.server.tag.Tag
 fun handleBarrelClose(event: InventoryCloseEvent) {
     val player = event.player
     val inv = event.inventory
-    if (inv?.title?.contains(barrelName) == true) {
-        for (slot in 0..53) {
+    if(inv?.title?.contains(barrelName) == true) {
+        for(slot in 0..53) {
             val item = inv.getItemStack(slot)
             val target = playerTargets[player.username]!!
             val block = player.instance.getBlock(target)

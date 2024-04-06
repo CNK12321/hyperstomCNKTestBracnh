@@ -246,7 +246,6 @@ fun breakDevBlock(event: PlayerBlockBreakEvent) {
             event.player.instance.setBlock(x, y + 1, z, Block.AIR)
             event.player.instance.setBlock(x - 1, y, z, Block.AIR)
         }
-
         "container" -> {
             for (slot in 0..53) {
                 val item = event.block.getTag(Tag.ItemStack("barrel.slot$slot"))
@@ -371,7 +370,7 @@ fun signWithLines(vararg lines: String): Block {
 
 fun getBarrel(): Block {
     var block = Block.BARREL
-    for (slot in 0..53) {
+    for(slot in 0..53) {
         block = block.withTag(Tag.ItemStack("barrel.slot$slot"), ItemStack.AIR)
     }
     block = block.withTag(Tag.String("codeBlockType"), "container")

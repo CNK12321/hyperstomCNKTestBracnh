@@ -8,20 +8,20 @@ import net.minestom.server.tag.Tag
 fun dispatchInventory(player: Player) {
     val target = player.getTargetBlockPosition(100) ?: return
     val block = player.instance.getBlock(target)
-    if (block.getTag(Tag.String("codeBlockType")) == "sign") {
-        if (block.getTag(Tag.String("line1")) == "PLAYER EVENT") {
+    if(block.getTag(Tag.String("codeBlockType")) == "sign") {
+        if(block.getTag(Tag.String("line1")) == "PLAYER EVENT") {
             displayPlayerEventMenu(player)
         }
-        if (block.getTag(Tag.String("line1")) == "PLAYER ACTION") {
+        if(block.getTag(Tag.String("line1")) == "PLAYER ACTION") {
             displayPlayerActionMenu(player)
         }
-        if (block.getTag(Tag.String("line1")) == "SET VARIABLE") {
+        if(block.getTag(Tag.String("line1")) == "SET VARIABLE") {
             displaySetVariableMenu(player)
         }
-        if (block.getTag(Tag.String("line1")) == "SET TARGET") {
+        if(block.getTag(Tag.String("line1")) == "SET TARGET") {
             displaySetTargetMenu(player)
         }
-        if (block.getTag(Tag.String("line1")) == "IF PLAYER") {
+        if(block.getTag(Tag.String("line1")) == "IF PLAYER") {
             displayIfPlayerMenu(player)
         }
     }
