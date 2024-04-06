@@ -1,7 +1,10 @@
 package emeraldwater.infernity.dev
 
 import emeraldwater.infernity.dev.commands.handleCommandRegistration
-import emeraldwater.infernity.dev.events.*
+import emeraldwater.infernity.dev.events.detectRightClick
+import emeraldwater.infernity.dev.events.onBreakBlock
+import emeraldwater.infernity.dev.events.onPlaceBlock
+import emeraldwater.infernity.dev.events.overrideChat
 import emeraldwater.infernity.dev.interpreter.Interpreter
 import emeraldwater.infernity.dev.interpreter.PlayerEvent
 import emeraldwater.infernity.dev.interpreter.interpret
@@ -12,8 +15,8 @@ import emeraldwater.infernity.dev.items.checkValuesMenu
 import emeraldwater.infernity.dev.items.handleEditItem
 import emeraldwater.infernity.dev.plots.PlotMode
 import emeraldwater.infernity.dev.plots.PlotState
+import emeraldwater.infernity.dev.plugin_channels.ClientMod
 import emeraldwater.infernity.dev.plugin_channels.pluginChannelHandler
-import net.hollowcube.block.placement.HCPlacementRules
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Point
@@ -41,6 +44,7 @@ val players: List<Player> = mutableListOf()
 fun mm(string: String) = MiniMessage.miniMessage().deserialize("<!italic>$string")
 
 val barrelName = mm("Block Arguments")
+
 object Main {
     @JvmStatic
     fun main(args: Array<String>) {
@@ -72,7 +76,8 @@ object Main {
             """
 <gray>Welcome to <green>Emerald<blue>Water<gray>.
 <gray>Developed by <red>Infernity <gray>and <light_purple>Endistic<gray>.
-""".trimIndent())
+""".trimIndent()
+        )
 
         // Add an event callback to specify the spawning instance (and the spawn position)
         val globalEventHandler: GlobalEventHandler = MinecraftServer.getGlobalEventHandler()

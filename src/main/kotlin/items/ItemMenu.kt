@@ -7,7 +7,7 @@ import net.minestom.server.inventory.InventoryType
 import net.minestom.server.inventory.TransactionOption
 
 fun checkValuesMenu(event: PlayerUseItemEvent) {
-    if(event.itemStack == DevItems.valuesItem) {
+    if (event.itemStack == DevItems.valuesItem) {
         event.player.openInventory(Inventory(InventoryType.CHEST_1_ROW, mm("Item Values")))
         event.player.openInventory?.addItemStacks(
             listOf(
@@ -21,7 +21,7 @@ fun checkValuesMenu(event: PlayerUseItemEvent) {
             TransactionOption.ALL
         )
     }
-    if(event.itemStack == DevItems.codeBlocksItem) {
+    if (event.itemStack == DevItems.codeBlocksItem) {
         event.player.openInventory(Inventory(InventoryType.CHEST_1_ROW, mm("Code Blocks")))
         event.player.openInventory?.addItemStacks(
             listOf(

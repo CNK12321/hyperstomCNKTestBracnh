@@ -5,7 +5,8 @@ import emeraldwater.infernity.dev.interpreter.parseDevArea
 import emeraldwater.infernity.dev.mm
 import emeraldwater.infernity.dev.playerModes
 import emeraldwater.infernity.dev.plots.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.minestom.server.MinecraftServer
 import net.minestom.server.command.builder.Command
@@ -15,12 +16,11 @@ import net.minestom.server.entity.GameMode
 import net.minestom.server.entity.Player
 import net.minestom.server.potion.Potion
 import net.minestom.server.potion.PotionEffect
-import kotlin.coroutines.CoroutineContext
 
 /**
  * Handles logic for "joining plot 0" or the /leave command.
  */
-fun handleLeavingLogic(player: Player){
+fun handleLeavingLogic(player: Player) {
     if (playerModes[player.username]?.mode == PlotMode.IN_HUB) {
         player.sendMessage(MiniMessage.miniMessage().deserialize("<red>You must be in a plot to leave it!"))
         return
@@ -42,12 +42,12 @@ fun handleLeavingLogic(player: Player){
  */
 fun handleJoinCommandLogic(player: Player, id: Int) {
     val filtered = plots.filter { it.id == id }
-    if(id == 0){
+    if (id == 0) {
         handleLeavingLogic(player)
         return
     }
     player.sendMessage("Alright! Taking you to the plot in a few moments... ${filtered}")
-    if(filtered.size == 1) {
+    if (filtered.size == 1) {
         val plot = filtered[0]
         plot.joinInstance(player)
     } else {
@@ -67,7 +67,11 @@ fun handleJoinCommandLogic(player: Player, id: Int) {
 
 object JoinCommand : Command("join") {
     init {
-        setDefaultExecutor { sender, context -> sender.sendMessage(MiniMessage.miniMessage().deserialize("<red>You must provide a plot id!")) }
+        setDefaultExecutor { sender, context ->
+            sender.sendMessage(
+                MiniMessage.miniMessage().deserialize("<red>You must provide a plot id!")
+            )
+        }
 
         val plotId = ArgumentType.Integer("plot id")
 
@@ -86,7 +90,10 @@ object PlayCommand : Command("play") {
             if (mode.mode != PlotMode.IN_HUB) {
                 filterPlot(mode.id).joinInstance(player)
             } else {
-                player.sendMessage(MiniMessage.miniMessage().deserialize("<red>You must provide a plot id, or be on a plot to enter play mode!"))
+                player.sendMessage(
+                    MiniMessage.miniMessage()
+                        .deserialize("<red>You must provide a plot id, or be on a plot to enter play mode!")
+                )
             }
         }
 
@@ -101,7 +108,7 @@ object PlayCommand : Command("play") {
 
 object LeaveCommand : Command("leave") {
     init {
-        setDefaultExecutor { sender, _ -> handleLeavingLogic(sender as Player)}
+        setDefaultExecutor { sender, _ -> handleLeavingLogic(sender as Player) }
     }
 }
 
@@ -110,34 +117,42 @@ object BuildCommand : Command("build") {
         setDefaultExecutor { sender, _ ->
             val player = sender as Player
             val mode = playerModes[player.username]!!
-            if(mode.mode != PlotMode.IN_HUB) {
+            if (mode.mode != PlotMode.IN_HUB) {
                 playerModes[player.username] = PlotState(mode.id, PlotMode.BUILD)
-                try { player.setInstance(filterPlot(mode.id).buildInstance) } catch(_: Exception) {}
+                try {
+                    player.setInstance(filterPlot(mode.id).buildInstance)
+                } catch (_: Exception) {
+                }
                 player.teleport(Pos(1.0, 52.0, 1.0))
                 player.setGameMode(GameMode.CREATIVE)
                 player.inventory.clear()
             } else {
-                player.sendMessage(MiniMessage.miniMessage().deserialize("<red>You must be on a plot to use this command!"))
-            }
-        }
-    }
-}
-object DevCommand : Command("dev", "code") {
-    init {
-        setDefaultExecutor { sender, _ ->
-            val player = sender as Player
-            val mode = playerModes[player.username]!!
-            if(mode.mode != PlotMode.IN_HUB) {
-                playerModes[player.username] = PlotState(mode.id, PlotMode.DEV)
-                filterPlot(mode.id).joinDev(player)
-            } else {
-                player.sendMessage(MiniMessage.miniMessage().deserialize("<red>You must be on a plot to use this command!"))
+                player.sendMessage(
+                    MiniMessage.miniMessage().deserialize("<red>You must be on a plot to use this command!")
+                )
             }
         }
     }
 }
 
-object DebugCommand : Command("debug"){
+object DevCommand : Command("dev", "code") {
+    init {
+        setDefaultExecutor { sender, _ ->
+            val player = sender as Player
+            val mode = playerModes[player.username]!!
+            if (mode.mode != PlotMode.IN_HUB) {
+                playerModes[player.username] = PlotState(mode.id, PlotMode.DEV)
+                filterPlot(mode.id).joinDev(player)
+            } else {
+                player.sendMessage(
+                    MiniMessage.miniMessage().deserialize("<red>You must be on a plot to use this command!")
+                )
+            }
+        }
+    }
+}
+
+object DebugCommand : Command("debug") {
     init {
         setDefaultExecutor { sender, _ ->
             sender.sendMessage(MiniMessage.miniMessage().deserialize("<red>You must have a valid subcommand!"))
@@ -156,7 +171,7 @@ object DebugCommand : Command("debug"){
             if (debugInfoToGet == "state") {
                 sender.sendMessage("player state: ${playerModes[player.username]!!}")
             }
-            if(debugInfoToGet == "parseDevArea") {
+            if (debugInfoToGet == "parseDevArea") {
                 sender.sendMessage("Parsing dev area...")
                 val headers = parseDevArea(player.instance!!)
                 sender.sendMessage(mm("Headers:\n<click:copy_to_clipboard:$headers>$headers</click>"))
@@ -169,7 +184,7 @@ object SavePlotsCommand : Command("saveplots") {
     init {
         setDefaultExecutor { player, _ ->
             player.sendMessage("Saving plots to storage...")
-            for(plot in plots) {
+            for (plot in plots) {
                 val buildWorld = plot.buildInstance
                 val savedBuildWorld = buildWorld.saveChunksToStorage()
                 savedBuildWorld.thenRun {
@@ -216,7 +231,7 @@ object LocateCommand : Command("locate") {
     }
 }
 
-fun handleCommandRegistration(){
+fun handleCommandRegistration() {
     MinecraftServer.getCommandManager().register(JoinCommand)
     MinecraftServer.getCommandManager().register(PlayCommand)
     MinecraftServer.getCommandManager().register(LeaveCommand)

@@ -1,15 +1,12 @@
 package emeraldwater.infernity.dev.inventories.items
 
 import emeraldwater.infernity.dev.interpreter.PlayerAction
-import emeraldwater.infernity.dev.mm
 import net.minestom.server.entity.Player
 import net.minestom.server.inventory.Inventory
 import net.minestom.server.inventory.InventoryType
 import net.minestom.server.inventory.TransactionOption
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
-import net.minestom.server.network.packet.client.ClientPacketsHandler.Play
-import net.minestom.server.tag.Tag
 
 private val menuItems: List<ItemStack> = listOf(
 //    ItemStack.builder(Material.POTATO)

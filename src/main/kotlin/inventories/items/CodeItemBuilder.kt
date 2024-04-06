@@ -1,9 +1,6 @@
 package emeraldwater.infernity.dev.inventories.items
 
-import emeraldwater.infernity.dev.interpreter.Action
 import emeraldwater.infernity.dev.interpreter.EnumAction
-import emeraldwater.infernity.dev.interpreter.PlayerAction
-import emeraldwater.infernity.dev.items.DevItems
 import emeraldwater.infernity.dev.mm
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
@@ -40,28 +37,33 @@ class DevItemBuilder {
         this.name = name
         return this
     }
+
     fun item(item: Material): DevItemBuilder {
         this.material = item
         return this
     }
+
     fun description(desc: String): DevItemBuilder {
         description += desc.split('\n')
         return this
     }
+
     fun parameter(type: Type, use: String): DevItemBuilder {
-        if(!description.contains("<white>Chest Parameters:")) {
+        if (!description.contains("<white>Chest Parameters:")) {
             description += listOf("", "<white>Chest Parameters:")
         }
         description += "${type.mini} <dark_gray>- <gray>$use"
         return this
     }
+
     fun parameterPlural(type: Type, use: String): DevItemBuilder {
-        if(!description.contains("<white>Chest Parameters:")) {
+        if (!description.contains("<white>Chest Parameters:")) {
             description += listOf("", "<white>Chest Parameters:")
         }
         description += "${type.mini}(s) <dark_gray>- <gray>$use"
         return this
     }
+
     fun build(action: EnumAction): ItemStack {
         return ItemStack.builder(material)
             .displayName(mm(name))

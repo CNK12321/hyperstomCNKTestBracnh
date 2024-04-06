@@ -13,7 +13,7 @@ import net.minestom.server.instance.Instance
 
 fun Player.interpret(event: Event) = run {
     val player = this
-    if(playerModes[player.username]?.mode == PlotMode.PLAY) {
+    if (playerModes[player.username]?.mode == PlotMode.PLAY) {
         playerInterpreter[player.username]?.interpreterScope?.launch {
             playerInterpreter[player.username]?.interpretEvent(event)
         }
@@ -36,10 +36,10 @@ class Interpreter(
     init {
         functions = mutableMapOf()
         defaultPlayer = playerTargets.getOrNull(0)
-        for(container in containers) {
-            if(container is FunctionDefinitionBlock) {
+        for (container in containers) {
+            if (container is FunctionDefinitionBlock) {
                 val arg = container.args[0]
-                if(arg is Argument.FunctionReference) {
+                if (arg is Argument.FunctionReference) {
                     functions[arg.value] = container
                 }
             }
@@ -53,9 +53,9 @@ class Interpreter(
      */
     fun interpretEvent(event: Event) {
         val localVariables: MutableMap<String, Argument> = mutableMapOf()
-        for(container in containers) {
-            if(container is PlayerEventBlock && event is PlayerEvent) {
-                if(container.action == event) {
+        for (container in containers) {
+            if (container is PlayerEventBlock && event is PlayerEvent) {
+                if (container.action == event) {
                     interpretContainer(container, localVariables)
                 }
             }
@@ -70,18 +70,23 @@ class Interpreter(
     fun interpretContainer(container: ActionContainer, vars: MutableMap<String, Argument>) {
         // Create the new scope for the container
         val containerScope: MutableMap<String, Argument> = mutableMapOf()
-        for(action in container.actions) {
+        for (action in container.actions) {
             interpretBlock(action, vars, containerScope)
         }
     }
+
     /**
      * Interpret an individual container
      * @param container The container to interpret
      * @param vars Local variables in this scope
      * @param blockVars Block variables in this scope
      */
-    fun interpretContainer(container: ActionContainer, vars: MutableMap<String, Argument>, blockVars: MutableMap<String, Argument>) {
-        for(action in container.actions) {
+    fun interpretContainer(
+        container: ActionContainer,
+        vars: MutableMap<String, Argument>,
+        blockVars: MutableMap<String, Argument>
+    ) {
+        for (action in container.actions) {
             interpretBlock(action, vars, blockVars)
         }
     }
@@ -92,17 +97,21 @@ class Interpreter(
      * @param localVariables Local variables in this scope
      * @param blockVariables The variables unique to this container
      */
-    fun interpretBlock(block: Action, localVariables: MutableMap<String, Argument>, blockVariables: MutableMap<String, Argument>) {
+    fun interpretBlock(
+        block: Action,
+        localVariables: MutableMap<String, Argument>,
+        blockVariables: MutableMap<String, Argument>
+    ) {
         try {
-            if(block is PlayerActionBlock) {
+            if (block is PlayerActionBlock) {
                 playerAction(block, localVariables, blockVariables)
             }
-            if(block is IfPlayerBlock) {
+            if (block is IfPlayerBlock) {
                 ifPlayer(block, localVariables, blockVariables)
             }
 
-        } catch(e: Exception) {
-            when(e) {
+        } catch (e: Exception) {
+            when (e) {
                 is IndexOutOfBoundsException -> {}
                 else -> {
                     println("An unknown exception occured during interpreting:")

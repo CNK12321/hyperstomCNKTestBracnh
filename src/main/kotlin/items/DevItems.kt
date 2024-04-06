@@ -87,6 +87,7 @@ object DevItems {
             mm("<dark_gray>- <gray>Check if a player has an item"),
         )
         .build()
+
     /*
     Value Items
      */
@@ -103,9 +104,13 @@ object DevItems {
         .withTag(Tag.String("varitem.value"), "")
 
     val richText = ItemStack.builder(Material.RAISER_ARMOR_TRIM_SMITHING_TEMPLATE)
-        .meta(NBT.Compound(mapOf(
-            "HideFlags" to NBT.Int(255)
-        )))
+        .meta(
+            NBT.Compound(
+                mapOf(
+                    "HideFlags" to NBT.Int(255)
+                )
+            )
+        )
         .displayName(mm("<#55aa00>Rich Text"))
         .lore(
             mm("<gray>Represents a rich text value."),

@@ -31,9 +31,10 @@ private object ConfigItems {
                 mm("<dark_grey>» <grey>Mutable"),
                 mm("<dark_aqua>» <aqua>Immutable"),
 
-            )
+                )
             .build()
     }
+
     object Lifetime {
         val global = ItemStack.builder(Material.ITEM_FRAME)
             .displayName(mm("<green>Global"))
@@ -71,12 +72,13 @@ private object ConfigItems {
             .build()
     }
 }
+
 fun openVarMenu(player: Player) {
     player.openInventory(Inventory(InventoryType.CHEST_3_ROW, "Variable Configuration"))
     val mutability = player.itemInMainHand.getTag(Tag.String("varitem.value.mutable"))
     val lifetime = player.itemInMainHand.getTag(Tag.String("varitem.value.lifetime"))
     // slot 12 lifetime
-    if(mutability == "true") {
+    if (mutability == "true") {
         player.openInventory?.setItemStack(
             12,
             ConfigItems.Mutability.mutable
@@ -89,19 +91,19 @@ fun openVarMenu(player: Player) {
     }
 
     // slot 14 mutability
-    if(lifetime == "global") {
+    if (lifetime == "global") {
         player.openInventory?.setItemStack(
             14,
             ConfigItems.Lifetime.global
         )
     }
-    if(lifetime == "block") {
+    if (lifetime == "block") {
         player.openInventory?.setItemStack(
             14,
             ConfigItems.Lifetime.block
         )
     }
-    if(lifetime == "persistent") {
+    if (lifetime == "persistent") {
         player.openInventory?.setItemStack(
             14,
             ConfigItems.Lifetime.persistent
@@ -116,7 +118,7 @@ fun clickVarItem(event: InventoryPreClickEvent) {
     var lifetime = player.itemInMainHand.getTag(Tag.String("varitem.value.lifetime"))
     var mutability = player.itemInMainHand.getTag(Tag.String("varitem.value.mutable"))
     val value = player.itemInMainHand.getTag(Tag.String("varitem.value.value"))
-    if(event.clickedItem == ConfigItems.Mutability.mutable) {
+    if (event.clickedItem == ConfigItems.Mutability.mutable) {
         event.isCancelled = true
         clicked = true
         mutability = "false"
@@ -127,7 +129,7 @@ fun clickVarItem(event: InventoryPreClickEvent) {
             ConfigItems.Mutability.immutable
         )
     }
-    if(event.clickedItem == ConfigItems.Mutability.immutable) {
+    if (event.clickedItem == ConfigItems.Mutability.immutable) {
         event.isCancelled = true
         mutability = "true"
         clicked = true
@@ -138,7 +140,7 @@ fun clickVarItem(event: InventoryPreClickEvent) {
         )
     }
 
-    if(event.clickedItem == ConfigItems.Lifetime.block) {
+    if (event.clickedItem == ConfigItems.Lifetime.block) {
         event.isCancelled = true
         lifetime = "global"
         clicked = true
@@ -149,7 +151,7 @@ fun clickVarItem(event: InventoryPreClickEvent) {
         )
     }
 
-    if(event.clickedItem == ConfigItems.Lifetime.persistent) {
+    if (event.clickedItem == ConfigItems.Lifetime.persistent) {
         event.isCancelled = true
         lifetime = "block"
         clicked = true
@@ -160,7 +162,7 @@ fun clickVarItem(event: InventoryPreClickEvent) {
         )
     }
 
-    if(event.clickedItem == ConfigItems.Lifetime.global) {
+    if (event.clickedItem == ConfigItems.Lifetime.global) {
         event.isCancelled = true
         lifetime = "persistent"
         clicked = true
@@ -171,7 +173,7 @@ fun clickVarItem(event: InventoryPreClickEvent) {
         )
     }
 
-    if(clicked) {
+    if (clicked) {
         player.itemInMainHand = item
             .withDisplayName(mm("<yellow>$value"))
             .withLore(listOf(handleVarLore(lifetime, mutability)))

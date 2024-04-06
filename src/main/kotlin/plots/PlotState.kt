@@ -7,7 +7,7 @@ enum class PlotMode {
     IN_HUB;
 
     override fun toString(): String {
-        return when(this) {
+        return when (this) {
             PLAY -> "Play"
             BUILD -> "Build"
             DEV -> "Dev"

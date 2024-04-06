@@ -10,36 +10,38 @@ import net.minestom.server.tag.Tag
 fun handleEditItem(event: PlayerChatEvent) {
     val item = event.player.itemInMainHand
     val player = event.player
-    if(item.getTag(Tag.String("varitem.id")) == "txt") {
+    if (item.getTag(Tag.String("varitem.id")) == "txt") {
         event.isCancelled = true
         player.itemInMainHand = item
             .withDisplayName(Component.text(event.message))
             .withLore(listOf())
             .withTag(Tag.String("varitem.value"), event.message)
     }
-    if(item.getTag(Tag.String("varitem.id")) == "rtxt") {
+    if (item.getTag(Tag.String("varitem.id")) == "rtxt") {
         event.isCancelled = true
         player.itemInMainHand = item
             .withDisplayName(mm(event.message))
-            .withLore(listOf(
-                mm("<gray>Expression:"),
-                Component.text(event.message, Style.style(TextColor.color(255, 255, 255)))
-            ))
+            .withLore(
+                listOf(
+                    mm("<gray>Expression:"),
+                    Component.text(event.message, Style.style(TextColor.color(255, 255, 255)))
+                )
+            )
             .withTag(Tag.Component("varitem.value"), mm(event.message))
     }
-    if(item.getTag(Tag.String("varitem.id")) == "num") {
+    if (item.getTag(Tag.String("varitem.id")) == "num") {
         event.isCancelled = true
         try {
             player.itemInMainHand = item
                 .withDisplayName(mm("<red>" + event.message))
                 .withLore(listOf())
                 .withTag(Tag.Double("varitem.value"), event.message.toDouble())
-        } catch(e: NumberFormatException) {
+        } catch (e: NumberFormatException) {
             player.sendMessage(mm("<red>${event.message} is not a valid number."))
         }
 
     }
-    if(item.getTag(Tag.String("varitem.id")) == "var") {
+    if (item.getTag(Tag.String("varitem.id")) == "var") {
         event.isCancelled = true
         val lifetime = player.itemInMainHand.getTag(Tag.String("varitem.value.lifetime"))
         val mutability = player.itemInMainHand.getTag(Tag.String("varitem.value.mutable"))
@@ -48,7 +50,7 @@ fun handleEditItem(event: PlayerChatEvent) {
             .withLore(listOf(handleVarLore(lifetime, mutability)))
             .withTag(Tag.String("varitem.value"), event.message)
     }
-    if(item.getTag(Tag.String("varitem.id")) == "func") {
+    if (item.getTag(Tag.String("varitem.id")) == "func") {
         event.isCancelled = true
         player.itemInMainHand = item
             .withDisplayName(mm("<blue>" + event.message))
@@ -59,18 +61,18 @@ fun handleEditItem(event: PlayerChatEvent) {
 
 fun handleVarLore(lifetime: String, mutability: String): Component {
     var output = ""
-    if(mutability == "true") {
+    if (mutability == "true") {
         output += "<#ffd42a>MUTABLE "
     } else {
         output += "<#ff5500>IMMUTABLE "
     }
-    if(lifetime == "persistent") {
+    if (lifetime == "persistent") {
         output += "<yellow>PERSISTENT "
     }
-    if(lifetime == "global") {
+    if (lifetime == "global") {
         output += "<green>GLOBAL "
     }
-    if(lifetime == "block") {
+    if (lifetime == "block") {
         output += "<blue>BLOCK "
     }
     return mm(output)

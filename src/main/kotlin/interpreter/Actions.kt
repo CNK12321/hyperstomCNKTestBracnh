@@ -1,7 +1,5 @@
 package emeraldwater.infernity.dev.interpreter
 
-import kotlin.enums.EnumEntries
-
 interface EnumAction {
     val signText: String
 }
@@ -9,6 +7,7 @@ interface EnumAction {
 interface Event : EnumAction {
 
 }
+
 enum class PlayerEvent(override val signText: String) : EnumAction, Event {
     JOIN("Join"),
     LEAVE("Leave"),
